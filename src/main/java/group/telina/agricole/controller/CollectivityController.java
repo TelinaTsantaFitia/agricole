@@ -10,33 +10,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/collectivities")
 public class CollectivityController {
+
     private final CollectivityService service;
 
     public CollectivityController(CollectivityService service) {
         this.service = service;
     }
 
-    @PostMapping("/collectivities")
-    public ResponseEntity<List<CollectivityRest>> create(@RequestBody List<Collectivity> collectivities) {
-        try {
-            List<Collectivity> saved = service.saveAll(collectivities);
+    @PostMapping
+    public ResponseEntity<List<CollectivityRest>> create(
+            @RequestBody List<Collectivity> collectivities
+    ) {
+        List<Collectivity> saved = service.saveAll(collectivities);
 
-            List<CollectivityRest> response = saved.stream()
-                    .map(c -> new CollectivityRest(
-                            c.getId(), // Retourne un Integer
-                            c.getName(),
-                            c.getAddress(),
-                            c.getCollectivityType(),
-                            c.getEmail(),
-                            c.getPhoneNumber()
-                    )).toList();
+        List<CollectivityRest> response = saved.stream()
+                .map(c -> new CollectivityRest(
+                        c.getId(),
+                        c.getName(),
+                        c.getAddress(),
+                        c.getCollectivityType(),
+                        c.getEmail(),
+                        c.getPhoneNumber()
+                ))
+                .toList();
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
