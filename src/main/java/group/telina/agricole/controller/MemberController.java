@@ -30,14 +30,14 @@ public class MemberController {
                             .map(member -> {
                                 List<MemberRefereeRest> refereesRest = member.getReferees().stream()
                                         .map(ref -> new MemberRefereeRest(
-                                                ref.getId(),
+                                                ref.getId(), // Doit être un Integer
                                                 ref.getFirstName() + " " + ref.getLastName(),
                                                 ref.getOccupation()
                                         ))
                                         .toList();
 
                                 return new MemberRest(
-                                        member.getId(),
+                                        member.getId(), // Doit être un Integer
                                         member.getFirstName(),
                                         member.getLastName(),
                                         member.getEmail(),

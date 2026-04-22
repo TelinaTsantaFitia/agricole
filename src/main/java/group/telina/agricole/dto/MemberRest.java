@@ -3,7 +3,7 @@ package group.telina.agricole.dto;
 import java.util.List;
 
 public class MemberRest {
-    private String id;
+    private Integer id; // Changé de String à Integer
     private String firstName;
     private String lastName;
     private String email;
@@ -11,7 +11,7 @@ public class MemberRest {
     private Integer phoneNumber;
     private List<MemberRefereeRest> referees;
 
-    public MemberRest(String id, String firstName, String lastName, String email,
+    public MemberRest(Integer id, String firstName, String lastName, String email,
                       String occupation, Integer phoneNumber, List<MemberRefereeRest> referees) {
         this.id = id;
         this.firstName = firstName;
@@ -22,7 +22,7 @@ public class MemberRest {
         this.referees = referees;
     }
 
-    public String getId() { return id; }
+    public Integer getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }

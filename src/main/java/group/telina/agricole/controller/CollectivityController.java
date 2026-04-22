@@ -24,7 +24,7 @@ public class CollectivityController {
 
             List<CollectivityRest> response = saved.stream()
                     .map(c -> new CollectivityRest(
-                            c.getId(),
+                            c.getId(), // Retourne un Integer
                             c.getName(),
                             c.getAddress(),
                             c.getCollectivityType(),
