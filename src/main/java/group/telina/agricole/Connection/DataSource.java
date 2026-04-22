@@ -11,7 +11,7 @@ public class DataSource {
 
     private static final String URL = "jdbc:postgresql://localhost:5432/agricole";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "telina123";
+    private static final String PASSWORD = "mdp";
 
     @Bean
     public Connection connection() {

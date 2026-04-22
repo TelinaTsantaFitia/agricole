@@ -3,7 +3,6 @@ package group.telina.agricole.controller;
 import group.telina.agricole.dto.CollectivityRest;
 import group.telina.agricole.entity.Collectivity;
 import group.telina.agricole.service.CollectivityService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,23 +18,19 @@ public class CollectivityController {
         this.service = service;
     }
 
+    // POST /collectivities
     @PostMapping
-    public ResponseEntity<List<CollectivityRest>> create(
-            @RequestBody List<Collectivity> collectivities
+    public ResponseEntity<CollectivityRest> create(
+            @RequestBody Collectivity c
     ) {
-        List<Collectivity> saved = service.saveAll(collectivities);
+        return ResponseEntity
+                .status(201)
+                .body(service.create(c));
+    }
 
-        List<CollectivityRest> response = saved.stream()
-                .map(c -> new CollectivityRest(
-                        c.getId(),
-                        c.getName(),
-                        c.getAddress(),
-                        c.getCollectivityType(),
-                        c.getEmail(),
-                        c.getPhoneNumber()
-                ))
-                .toList();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    // GET /collectivities
+    @GetMapping
+    public ResponseEntity<List<CollectivityRest>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
