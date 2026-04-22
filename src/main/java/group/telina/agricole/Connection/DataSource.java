@@ -1,5 +1,6 @@
 package group.telina.agricole.Connection;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.sql.Connection;
@@ -8,26 +9,16 @@ import java.sql.SQLException;
 
 @Configuration
 public class DataSource {
+    private final String jdbcURl = System.getenv("JDBC_URl"); //
+    private final String user = System.getenv("USER"); //mini_dish_db_manager
+    private final String password = System.getenv("PASSWORD"); //123456
 
-    private static final String URL =
-            "jdbc:postgresql://localhost:5432/agricole";
-
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "mdp";
-
-    static {
+    @Bean
+    public Connection getConnection() {
         try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("PostgreSQL Driver not found", e);
-        }
-    }
-
-    public static Connection getConnection() {
-        try {
-            return DriverManager.getConnection(URL, USER, PASSWORD);
+            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/agricole_db", "postgres", "angela");
         } catch (SQLException e) {
-            throw new RuntimeException("DB connection failed", e);
+            throw new RuntimeException(e);
         }
     }
 }
