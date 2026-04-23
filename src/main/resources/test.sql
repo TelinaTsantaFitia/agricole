@@ -133,13 +133,14 @@ INSERT INTO account VALUES
                         ('C3-A-CASH','CASH',0,NULL,NULL,'col-3');
 
 INSERT INTO payment
-(member_id,collectivity_id,account_id,amount,payment_method,payment_date)
+(member_id, collectivity_id, account_id, amount, payment_method, payment_date)
 VALUES
-    ('C1-M1','col-1','C1-A-CASH',100000,'CASH','2026-01-01'),
-
-    ('C1-M2','col-1','C1-A-CASH',100000,'CASH','2026-01-01'),
-
-    ('C1-M3','col-1','C1-A-CASH',100000,'CASH','2026-01-01');
-
-
+    ('C1-M1','col-2','C2-A-CASH',60000,'CASH','2026-01-01'),
+    ('C1-M2','col-2','C2-A-CASH',90000,'CASH','2026-01-01'),
+    ('C1-M3','col-2','C2-A-CASH',100000,'CASH','2026-01-01'),
+    ('C1-M4','col-2','C2-A-CASH',100000,'CASH','2026-01-01'),
+    ('C1-M5','col-2','C2-A-CASH',100000,'CASH','2026-01-01'),
+    ('C1-M6','col-2','C2-A-CASH',100000,'CASH','2026-01-01'),
+    ('C1-M7','col-2','C2-A-MOBILE-1',40000,'MOBILE_MONEY','2026-01-01'),
+    ('C1-M8','col-2','C2-A-MOBILE-1',60000,'MOBILE_MONEY','2026-01-01');
 
