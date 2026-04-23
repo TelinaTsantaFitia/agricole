@@ -1,6 +1,9 @@
 package group.telina.agricole.repository;
 
+import group.telina.agricole.entity.Account;
 import group.telina.agricole.entity.Collectivity;
+import group.telina.agricole.entity.Member;
+
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -12,72 +15,315 @@ public class CollectivityRepository {
 
     private final Connection connection;
 
-    public CollectivityRepository(Connection connection) {
+    public CollectivityRepository(
+            Connection connection
+    ){
         this.connection = connection;
     }
 
-    // POST
-    public Collectivity save(Collectivity c) {
 
-        String sql = """
-            INSERT INTO collectivity
-            (collectivity_number, name, address, collectivity_type, email, phone_number)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """;
+    // ==================================
+    // EXISTANT
+    // ==================================
 
-        try (PreparedStatement ps =
-                     connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    public Collectivity save(
+            Collectivity c
+    ){
 
-            ps.setInt(1, c.getNumber());
-            ps.setString(2, c.getName());
-            ps.setString(3, c.getAddress());
-            ps.setString(4, c.getCollectivityType());
-            ps.setString(5, c.getEmail());
-            ps.setInt(6, c.getPhoneNumber());
+        try{
+
+            String sql="""
+                INSERT INTO collectivity(
+                    id,
+                    number,
+                    name,
+                    address,
+                    collectivity_type
+                )
+                VALUES (?,?,?,?,?)
+            """;
+
+            PreparedStatement ps=
+                    connection.prepareStatement(sql);
+
+            ps.setString(1,c.getId());
+            ps.setInt(2,c.getNumber());
+            ps.setString(3,c.getName());
+            ps.setString(4,c.getAddress());
+            ps.setString(
+                    5,
+                    c.getCollectivityType()
+            );
 
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-
-            if (rs.next()) {
-                c.setId(rs.getInt(1));
-            }
-
             return c;
 
-        } catch (Exception e) {
+        }
+        catch(Exception e){
             throw new RuntimeException(e);
         }
+
     }
 
-    // GET ALL
-    public List<Collectivity> findAll() {
 
-        List<Collectivity> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM collectivity";
+    public List<Collectivity> findAll(){
 
-        try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        List<Collectivity> list=
+                new ArrayList<>();
 
-            while (rs.next()) {
+        try{
 
-                Collectivity c = new Collectivity();
-                c.setId(rs.getInt("id"));
-                c.setNumber(rs.getInt("collectivity_number"));
-                c.setName(rs.getString("name"));
-                c.setAddress(rs.getString("address"));
-                c.setCollectivityType(rs.getString("collectivity_type"));
-                c.setEmail(rs.getString("email"));
-                c.setPhoneNumber(rs.getInt("phone_number"));
+            String sql="""
+              SELECT * FROM collectivity
+            """;
+
+            PreparedStatement ps=
+                    connection.prepareStatement(sql);
+
+            ResultSet rs=
+                    ps.executeQuery();
+
+            while(rs.next()){
+
+                Collectivity c=
+                        new Collectivity();
+
+                c.setId(
+                        String.valueOf(Integer.valueOf(rs.getString("id")))
+                );
+
+                c.setNumber(
+                        rs.getInt("number")
+                );
+
+                c.setName(
+                        rs.getString("name")
+                );
+
+                c.setAddress(
+                        rs.getString("address")
+                );
+
+                c.setCollectivityType(
+                        rs.getString(
+                                "collectivity_type"
+                        )
+                );
 
                 list.add(c);
+
             }
 
-        } catch (Exception e) {
+        }
+        catch(Exception e){
             throw new RuntimeException(e);
         }
 
         return list;
     }
+
+
+
+    // ==================================
+    // GET /collectivities/{id}
+    // ==================================
+    public Collectivity findById(
+            String id
+    ){
+
+        try{
+
+            String sql="""
+                SELECT *
+                FROM collectivity
+                WHERE id=?
+            """;
+
+            PreparedStatement ps=
+                    connection.prepareStatement(sql);
+
+            ps.setString(1,id);
+
+            ResultSet rs=
+                    ps.executeQuery();
+
+            if(!rs.next()){
+                return null;
+            }
+
+            Collectivity c=
+                    new Collectivity();
+
+            c.setId(
+                    String.valueOf(Integer.valueOf(rs.getString("id")))
+            );
+
+            c.setNumber(
+                    rs.getInt("number")
+            );
+
+            c.setName(
+                    rs.getString("name")
+            );
+
+            c.setAddress(
+                    rs.getString("address")
+            );
+
+            c.setCollectivityType(
+                    rs.getString(
+                            "collectivity_type"
+                    )
+            );
+
+
+
+            // charger members
+            String memberSql="""
+               SELECT *
+               FROM member
+               WHERE collectivity_id=?
+            """;
+
+            PreparedStatement ms=
+                    connection.prepareStatement(
+                            memberSql
+                    );
+
+            ms.setString(1,id);
+
+            ResultSet mr=
+                    ms.executeQuery();
+
+            List<Member> members=
+                    new ArrayList<>();
+
+            while(mr.next()){
+
+                Member m=
+                        new Member();
+
+                m.setId(
+                        String.valueOf(Integer.valueOf(mr.getString("id")))
+                );
+
+                m.setFirstName(
+                        mr.getString("first_name")
+                );
+
+                m.setLastName(
+                        mr.getString("last_name")
+                );
+
+                m.setOccupation(
+                        mr.getString("occupation")
+                );
+
+                members.add(m);
+            }
+
+            c.setMembers(members);
+
+            return c;
+
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
+
+    // ==================================
+    // GET financial accounts
+    // ==================================
+    public List<Account> findFinancialAccounts(
+            String collectivityId,
+            String at
+    ){
+
+        List<Account> accounts=
+                new ArrayList<>();
+
+        try{
+
+            String sql="""
+              SELECT
+                a.id,
+                a.account_type,
+                a.balance +
+                COALESCE(
+                  SUM(p.amount),
+                  0
+                ) as balance
+
+              FROM account a
+
+              LEFT JOIN payment p
+              ON a.id=p.account_id
+              AND p.payment_date<=?
+
+              WHERE a.collectivity_id=?
+
+              GROUP BY
+                a.id,
+                a.account_type,
+                a.balance
+            """;
+
+            PreparedStatement ps=
+                    connection.prepareStatement(
+                            sql
+                    );
+
+            ps.setDate(
+                    1,
+                    Date.valueOf(at)
+            );
+
+            ps.setString(
+                    2,
+                    collectivityId
+            );
+
+            ResultSet rs=
+                    ps.executeQuery();
+
+            while(rs.next()){
+
+                Account a=
+                        new Account();
+
+                a.setId(
+                        Integer.valueOf(rs.getString("id"))
+                );
+
+                a.setAccountType(
+                        rs.getString(
+                                "account_type"
+                        )
+                );
+
+                a.setBalance(
+                        rs.getDouble(
+                                "balance"
+                        )
+                );
+
+                accounts.add(a);
+            }
+
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return accounts;
+
+    }
+
 }

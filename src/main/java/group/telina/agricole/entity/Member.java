@@ -1,26 +1,26 @@
 package group.telina.agricole.entity;
 
-import java.util.List;
-
 public class Member {
 
-    private Integer id;
+    private String id;
     private String firstName;
     private String lastName;
-    private String email;
-    private Integer collectivityId;
+    private String collectivityId;
+    private String occupation;
 
-    private List<Sponsor> sponsors;
 
-    public Member() {}
+    public Member() {
+    }
 
-    public Integer getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
+
 
     public String getFirstName() {
         return firstName;
@@ -30,6 +30,7 @@ public class Member {
         this.firstName = firstName;
     }
 
+
     public String getLastName() {
         return lastName;
     }
@@ -38,27 +39,22 @@ public class Member {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getCollectivityId() {
+    public String getCollectivityId() {
         return collectivityId;
     }
 
-    public void setCollectivityId(Integer collectivityId) {
+    public void setCollectivityId(String collectivityId) {
         this.collectivityId = collectivityId;
     }
 
-    public List<Sponsor> getSponsors() {
-        return sponsors;
+
+    public String getOccupation() {
+        return occupation;
     }
 
-    public void setSponsors(List<Sponsor> sponsors) {
-        this.sponsors = sponsors;
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
     }
+
 }
