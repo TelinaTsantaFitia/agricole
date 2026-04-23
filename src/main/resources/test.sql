@@ -30,3 +30,25 @@ CREATE TABLE member (
                                                 REFERENCES collectivity(id)
                                                     ON DELETE SET NULL
 );
+
+
+
+CREATE TABLE account (
+                         id SERIAL PRIMARY KEY,
+                         collectivity_id INTEGER REFERENCES collectivity(id),
+                         type VARCHAR(20) CHECK (type IN ('CASH', 'BANK', 'MOBILE')),
+                         provider VARCHAR(100),
+                         account_number VARCHAR(50),
+                         balance DOUBLE PRECISION DEFAULT 0
+);
+
+CREATE TABLE payment (
+                         id SERIAL PRIMARY KEY,
+                         member_id INTEGER REFERENCES member(id),
+                         collectivity_id INTEGER REFERENCES collectivity(id),
+                         amount DOUBLE PRECISION NOT NULL,
+                         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         payment_method VARCHAR(20),
+                         account_id INTEGER REFERENCES account(id)
+);
+
