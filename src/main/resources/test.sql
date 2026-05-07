@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS member_referee;
-DROP TABLE IF EXISTS member;
-DROP TABLE IF EXISTS collectivity;
+
 
 CREATE TABLE collectivity (
                               id VARCHAR(20) PRIMARY KEY,
