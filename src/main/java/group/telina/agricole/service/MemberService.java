@@ -3,45 +3,37 @@ package group.telina.agricole.service;
 import group.telina.agricole.entity.Member;
 import group.telina.agricole.repository.MemberRepository;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 public class MemberService {
-    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    private final MemberRepository repository;
+
+    public MemberService(MemberRepository repository) {
+        this.repository = repository;
     }
 
-    public List<Member> admitAll(List<Member> members) {
-        return members.stream().map(this::validateAndSave).toList();
-    }
+    public Member create(Member m) {
 
-    private Member validateAndSave(Member member) {
-        // Règle B-2 : Au moins 2 parrains
-        if (member.getReferees() == null || member.getReferees().size() < 2) {
-            throw new RuntimeException("Un nouveau membre doit avoir au moins 2 parrains.");
+        // ❌ règle 1 : minimum 2 sponsors
+        if (m.getSponsors() == null || m.getSponsors().size() < 2) {
+            throw new RuntimeException("Minimum 2 sponsors required");
         }
 
-        int localCount = 0;
-        int externalCount = 0;
+        // ❌ règle 2 : comptage par collectivité
+        long same = m.getSponsors()
+                .stream()
+                .filter(s -> s.getCollectivityId()
+                        .equals(m.getCollectivityId()))
+                .count();
 
-        for (Member ref : member.getReferees()) {
-            Member sponsor = memberRepository.findById(ref.getId());
-            if (sponsor == null) throw new RuntimeException("Parrain " + ref.getId() + " introuvable.");
+        long others = m.getSponsors().size() - same;
 
-            if (sponsor.getCollectivityId().equals(member.getCollectivityId())) {
-                localCount++;
-            } else {
-                externalCount++;
-            }
+        // ❌ règle B-2
+        if (same < others) {
+            throw new RuntimeException("Invalid sponsorship rule");
         }
 
-        // Règle B-2 : Majorité locale
-        if (localCount < externalCount) {
-            throw new RuntimeException("Parrainage invalide : les parrains locaux doivent être majoritaires.");
-        }
-
-        return memberRepository.save(member);
+        return repository.save(m);
     }
 }

@@ -1,26 +1,32 @@
 package group.telina.agricole.dto;
 
+import group.telina.agricole.entity.Member;
+import java.util.List;
+
 public class CollectivityRest {
-    private Integer id; // Changé en Integer
+
+    private String id;        // ← String pas Integer
+    private Integer number;
     private String name;
     private String address;
     private String collectivityType;
-    private String email;
-    private Integer phoneNumber;
+    private List<Member> members;
 
-    public CollectivityRest(Integer id, String name, String address, String collectivityType, String email, Integer phoneNumber) {
+    public CollectivityRest(String id, Integer number, String name,
+                            String address, String collectivityType,
+                            List<Member> members) {
         this.id = id;
+        this.number = number;
         this.name = name;
         this.address = address;
         this.collectivityType = collectivityType;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+        this.members = members;
     }
 
-    public Integer getId() { return id; }
+    public String getId() { return id; }
+    public Integer getNumber() { return number; }
     public String getName() { return name; }
     public String getAddress() { return address; }
     public String getCollectivityType() { return collectivityType; }
-    public String getEmail() { return email; }
-    public Integer getPhoneNumber() { return phoneNumber; }
+    public List<Member> getMembers() { return members; }
 }
