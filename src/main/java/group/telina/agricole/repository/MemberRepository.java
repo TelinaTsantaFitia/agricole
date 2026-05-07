@@ -18,26 +18,19 @@ public class MemberRepository {
 
         String sql = """
             INSERT INTO member
-            (first_name, last_name, email, collectivity_id)
-            VALUES (?, ?, ?, ?)
+            (id, first_name, last_name, email, collectivity_id)
+            VALUES (?, ?, ?, ?, ?)
         """;
 
-        try (PreparedStatement ps =
-                     connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setString(1, m.getFirstName());
-            ps.setString(2, m.getLastName());
-            ps.setString(3, m.getEmail());
-            ps.setInt(4, m.getCollectivityId());
+            ps.setString(1, m.getId());           // ← id fourni par l'appelant
+            ps.setString(2, m.getFirstName());
+            ps.setString(3, m.getLastName());
+            ps.setString(4, m.getEmail());
+            ps.setString(5, m.getCollectivityId()); // ← String, pas setInt
 
             ps.executeUpdate();
-
-            ResultSet rs = ps.getGeneratedKeys();
-
-            if (rs.next()) {
-                m.setId(rs.getInt(1));
-            }
-
             return m;
 
         } catch (Exception e) {

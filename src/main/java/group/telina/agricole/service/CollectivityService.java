@@ -2,6 +2,7 @@ package group.telina.agricole.service;
 
 import group.telina.agricole.dto.CollectivityRest;
 import group.telina.agricole.entity.Collectivity;
+import group.telina.agricole.entity.Member;
 import group.telina.agricole.repository.CollectivityRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,41 +17,41 @@ public class CollectivityService {
         this.repository = repository;
     }
 
-    // POST
+    // POST /collectivities
     public CollectivityRest create(Collectivity c) {
-
-        // validation OAS : nom unique
-        boolean exists = repository.findAll()
-                .stream()
-                .anyMatch(x -> x.getName().equalsIgnoreCase(c.getName()));
-
-        if (exists) {
-            throw new RuntimeException("Collectivity name already exists");
-        }
-
         Collectivity saved = repository.save(c);
-
-        return new CollectivityRest(
-                saved.getId(),
-                saved.getNumber(),
-                saved.getName(),
-                saved.getAddress(),
-                saved.getCollectivityType()
-        );
+        return toRest(saved, List.of());
     }
 
-    // GET
+    // GET /collectivities
     public List<CollectivityRest> getAll() {
-
         return repository.findAll()
                 .stream()
-                .map(c -> new CollectivityRest(
-                        c.getId(),
-                        c.getNumber(),
-                        c.getName(),
-                        c.getAddress(),
-                        c.getCollectivityType()
-                ))
+                .map(c -> toRest(c, List.of()))
                 .toList();
+    }
+
+    // GET /collectivities/{id}
+    public CollectivityRest getById(String id) {
+        Collectivity c = repository.findById(id);
+
+        if (c == null) {
+            throw new RuntimeException("Collectivity not found: " + id);
+        }
+
+        List<Member> members = repository.findMembersByCollectivityId(id);
+        return toRest(c, members);
+    }
+
+    // Méthode utilitaire
+    private CollectivityRest toRest(Collectivity c, List<Member> members) {
+        return new CollectivityRest(
+                c.getId(),
+                c.getNumber(),
+                c.getName(),
+                c.getAddress(),
+                c.getCollectivityType(),
+                members
+        );
     }
 }

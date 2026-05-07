@@ -4,23 +4,20 @@ import java.util.List;
 
 public class Member {
 
-    private Integer id;
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
-    private Integer collectivityId;
+    private String collectivityId;
 
     private List<Sponsor> sponsors;
 
     public Member() {}
 
-    public Integer getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
+
 
     public String getFirstName() {
         return firstName;
@@ -46,13 +43,9 @@ public class Member {
         this.email = email;
     }
 
-    public Integer getCollectivityId() {
-        return collectivityId;
-    }
+    public String getCollectivityId() { return collectivityId; }
 
-    public void setCollectivityId(Integer collectivityId) {
-        this.collectivityId = collectivityId;
-    }
+    public void setCollectivityId(String collectivityId) { this.collectivityId = collectivityId; }
 
     public List<Sponsor> getSponsors() {
         return sponsors;
