@@ -18,19 +18,23 @@ public class CollectivityService {
     private final MemberRepository memberRepository;
     private final MembershipFeeRepository membershipFeeRepository;
     private final PaymentRepository paymentRepository;
+    private final ActivityRepository activityRepository;
+    private final AttendanceRepository attendanceRepository;
 
     public CollectivityService(
             CollectivityRepository repository,
             MemberRepository memberRepository,
             MembershipFeeRepository membershipFeeRepository,
-            PaymentRepository paymentRepository) {
+            PaymentRepository paymentRepository,
+            ActivityRepository activityRepository,
+            AttendanceRepository attendanceRepository) {
         this.repository = repository;
         this.memberRepository = memberRepository;
         this.membershipFeeRepository = membershipFeeRepository;
         this.paymentRepository = paymentRepository;
+        this.activityRepository = activityRepository;
+        this.attendanceRepository = attendanceRepository;
     }
-
-    // ─── Méthodes existantes ───────────────────────────────────────────────
 
     public CollectivityRest create(Collectivity c) {
         Collectivity saved = repository.save(c);
@@ -75,8 +79,6 @@ public class CollectivityService {
         );
     }
 
-    // ─── Nouvelles méthodes : statistiques ────────────────────────────────
-
     public CollectivityStatRest getCollectivityStatistics(
             String collectivityId, LocalDate from, LocalDate to) {
 
@@ -85,6 +87,9 @@ public class CollectivityService {
                 .findByCollectivityIdAndStatus(collectivityId, "ACTIVE");
         List<Payment> payments = paymentRepository
                 .findByCollectivityIdAndPaymentDateBetween(collectivityId, from, to);
+        List<Activity> mandatoryActivities = activityRepository
+                .findByCollectivityIdAndDateBetween(collectivityId, from, to);
+        int totalActivities = mandatoryActivities.size();
 
         Map<String, BigDecimal> paidByMember = payments.stream()
                 .collect(Collectors.groupingBy(
@@ -102,8 +107,19 @@ public class CollectivityService {
             BigDecimal paid = paidByMember.getOrDefault(member.getId(), BigDecimal.ZERO);
             BigDecimal unpaid = totalDue.subtract(paid);
             if (unpaid.compareTo(BigDecimal.ZERO) < 0) unpaid = BigDecimal.ZERO;
+
+            BigDecimal attendanceRate = BigDecimal.ZERO;
+            if (totalActivities > 0) {
+                long present = mandatoryActivities.stream()
+                        .filter(a -> attendanceRepository
+                                .countByActivityIdAndMemberIdAndPresent(a.getId(), member.getId()) > 0)
+                        .count();
+                attendanceRate = BigDecimal.valueOf(present * 100)
+                        .divide(BigDecimal.valueOf(totalActivities), 2, RoundingMode.HALF_UP);
+            }
+
             return new MemberStatRest(member.getId(), member.getFirstName(),
-                    member.getLastName(), paid, unpaid);
+                    member.getLastName(), paid, unpaid, attendanceRate);
         }).collect(Collectors.toList());
 
         return new CollectivityStatRest(collectivityId, memberStats);
@@ -151,8 +167,23 @@ public class CollectivityService {
                             && !m.getAdmissionDate().isAfter(to))
                     .count();
 
+            List<Activity> mandatoryActivities = activityRepository
+                    .findByCollectivityIdAndDateBetween(col.getId(), from, to);
+            int totalActivities = mandatoryActivities.size();
+
+            BigDecimal attendanceRate = BigDecimal.ZERO;
+            if (totalActivities > 0 && totalMembers > 0) {
+                long totalPresences = mandatoryActivities.stream()
+                        .flatMap(a -> members.stream()
+                                .filter(m -> attendanceRepository
+                                        .countByActivityIdAndMemberIdAndPresent(a.getId(), m.getId()) > 0))
+                        .count();
+                attendanceRate = BigDecimal.valueOf(totalPresences * 100)
+                        .divide(BigDecimal.valueOf((long) totalActivities * totalMembers), 2, RoundingMode.HALF_UP);
+            }
+
             return new FederationCollectivityStatRest(
-                    col.getId(), col.getName(), percentage, newMembers);
+                    col.getId(), col.getName(), percentage, newMembers, attendanceRate);
 
         }).collect(Collectors.toList());
     }

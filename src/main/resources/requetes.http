@@ -103,3 +103,54 @@ http://localhost:8080/collectivities/col-1/statistics?from=2026-01-01&to=2026-12
 ## Method : GET
 ###
 http://localhost:8080/collectivities/statistics?from=2026-01-01&to=2026-12-31
+
+
+## bonus
+
+
+# 1. POST /collectivities/col-1/activities
+## Method : POST
+### Headers : x-api-key: agri-secure-key
+### Content-Type: application/json
+http://localhost:8080/collectivities/col-1/activities
+Body :
+[
+  {
+    "id": "act-5",
+    "label": "Assemblée générale mars",
+    "type": "GENERAL_ASSEMBLY",
+    "activityDate": "2026-03-08",
+    "mandatory": true
+  }
+]
+
+# 2. GET /collectivities/col-1/activities
+## Method : GET
+### Headers : x-api-key: agri-secure-key
+http://localhost:8080/collectivities/col-1/activities
+
+# 3. POST /collectivities/col-1/activities/act-1/attendance
+## Method : POST
+### Headers : x-api-key: agri-secure-key
+### Content-Type: application/json
+http://localhost:8080/collectivities/col-1/activities/act-1/attendance
+Body :
+[
+  { "memberId": "C1-M4", "present": true },
+  { "memberId": "C1-M5", "present": false }
+]
+
+# 4. GET /collectivities/col-1/activities/act-1/attendance
+## Method : GET
+### Headers : x-api-key: agri-secure-key
+http://localhost:8080/collectivities/col-1/activities/act-1/attendance
+
+# 5. GET /collectivities/col-1/statistics
+## Method : GET
+### Headers : x-api-key: agri-secure-key
+http://localhost:8080/collectivities/col-1/statistics?from=2026-01-01&to=2026-12-31
+
+# 6. GET /collectivities/statistics
+## Method : GET
+### Headers : x-api-key: agri-secure-key
+http://localhost:8080/collectivities/statistics?from=2026-01-01&to=2026-12-31

@@ -66,4 +66,17 @@ public class AttendanceRepository {
         }
         return list;
     }
+
+    public long countByActivityIdAndMemberIdAndPresent(String activityId, String memberId) {
+        String sql = "SELECT COUNT(*) FROM attendance WHERE activity_id = ? AND member_id = ? AND present = true";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, activityId);
+            ps.setString(2, memberId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getLong(1);
+            return 0;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

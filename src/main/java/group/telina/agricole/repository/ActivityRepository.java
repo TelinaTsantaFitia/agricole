@@ -3,6 +3,7 @@ package group.telina.agricole.repository;
 import group.telina.agricole.entity.Activity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,5 +77,30 @@ public class ActivityRepository {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Activity> findByCollectivityIdAndDateBetween(
+            String collectivityId, LocalDate from, LocalDate to) {
+        List<Activity> list = new ArrayList<>();
+        String sql = "SELECT * FROM activity WHERE collectivity_id = ? AND activity_date BETWEEN ? AND ? AND mandatory = true";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, collectivityId);
+            ps.setDate(2, Date.valueOf(String.valueOf(from)));
+            ps.setDate(3, Date.valueOf(String.valueOf(to)));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Activity a = new Activity();
+                a.setId(rs.getString("id"));
+                a.setLabel(rs.getString("label"));
+                a.setType(rs.getString("type"));
+                a.setActivityDate(rs.getDate("activity_date").toLocalDate());
+                a.setMandatory(rs.getBoolean("mandatory"));
+                a.setCollectivityId(rs.getString("collectivity_id"));
+                list.add(a);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }
