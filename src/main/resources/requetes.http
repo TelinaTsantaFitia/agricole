@@ -1,0 +1,95 @@
+#1. GET /collectivities
+##Method : GET
+http://localhost:8080/collectivities
+
+#2. GET /collectivities/{id}
+## Method : GET
+###
+http://localhost:8080/collectivities/col-1
+
+#3. GET /collectivities/{id}/financialAccounts
+##Method : GET
+###
+http://localhost:8080/collectivities/col-1/financialAccounts?at=2026-01-31
+
+#4. GET /collectivities/{id}/membershipFees
+##Method : GET
+###
+http://localhost:8080/collectivities/col-1/membershipFees
+
+# 5. GET /collectivities/{id}/transactions
+## Method : GET
+###
+http://localhost:8080/collectivities/col-1/transactions?from=2026-01-01&to=2026-12-31
+
+# 6. POST /collectivities
+## Method : POST
+###
+http://localhost:8080/collectivities
+Headers : Content-Type: application/json
+Body :
+json{
+  "id": "col-5",
+  "number": 5,
+  "name": "Tantsaha vao",
+  "address": "Mahajanga",
+  "collectivityType": "Maraîchage"
+}
+
+# 7. PUT /collectivities/{id}/informations
+## Method : PUT
+###
+http://localhost:8080/collectivities/col-5/informations
+Headers : Content-Type: application/json
+Body :
+json{
+  "number": 5,
+  "name": "Tantsaha vao"
+}
+
+# 8. POST /collectivities/{id}/membershipFees
+## Method : POST
+###
+http://localhost:8080/collectivities/col-1/membershipFees
+Headers : Content-Type: application/json
+Body :
+json{
+  "id": "cot-4",
+  "label": "Cotisation mensuelle",
+  "status": "ACTIVE",
+  "frequency": "MONTHLY",
+  "amount": 10000,
+  "eligibleSince": "2026-01-01"
+}
+
+# 9. POST /members
+## Method : POST
+###
+http://localhost:8080/members
+Headers : Content-Type: application/json
+Body :
+json{
+  "id": "C1-M9",
+  "firstName": "Rakoto",
+  "lastName": "Andry",
+  "email": "rakoto.andry@fed-agri.mg",
+  "collectivityId": "col-1",
+  "sponsors": [
+    { "collectivityId": "col-1" },
+    { "collectivityId": "col-1" }
+  ]
+}
+
+# 10. POST /members/{id}/payments
+## Method : POST
+###
+http://localhost:8080/members/C1-M1/payments
+Headers : Content-Type: application/json
+Body :
+json{
+  "collectivityId": "col-1",
+  "accountId": "C1-A-CASH",
+  "amount": 50000,
+  "paymentMethod": "CASH",
+  "paymentDate": "2026-03-01"
+}
