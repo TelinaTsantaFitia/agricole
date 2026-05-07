@@ -5,12 +5,12 @@ import java.util.List;
 
 public class CollectivityRest {
 
-    private String id;           // ← était Integer
+    private String id;        // ← String pas Integer
     private Integer number;
     private String name;
     private String address;
     private String collectivityType;
-    private List<Member> members; // ← NOUVEAU
+    private List<Member> members;
 
     public CollectivityRest(String id, Integer number, String name,
                             String address, String collectivityType,

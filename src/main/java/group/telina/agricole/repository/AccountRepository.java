@@ -1,12 +1,11 @@
 package group.telina.agricole.repository;
 
-import java.sql.Connection;
 import group.telina.agricole.entity.Account;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 @Repository
 public class AccountRepository {
@@ -17,80 +16,41 @@ public class AccountRepository {
         this.connection = connection;
     }
 
-    // =========================
-    // CREATE ACCOUNT
-    // =========================
-    public Account save(Account a) {
-
-        String sql = """
-            INSERT INTO account
-            (collectivity_id, type, provider, account_number, balance)
-            VALUES (?, ?, ?, ?, ?)
-        """;
-
-        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setInt(1, a.getCollectivityId());
-            ps.setString(2, a.getType());
-            ps.setString(3, a.getProvider());
-            ps.setString(4, a.getAccountNumber());
-            ps.setDouble(5, a.getBalance());
-
-            ps.executeUpdate();
-
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                a.setId(rs.getInt(1));
-            }
-
-            return a;
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    // =========================
-    // UPDATE BALANCE
-    // =========================
-    public void updateBalance(Integer id, Double newBalance) {
-
-        String sql = "UPDATE account SET balance = ? WHERE id = ?";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-
-            ps.setDouble(1, newBalance);
-            ps.setInt(2, id);
-
-            ps.executeUpdate();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Account findById(Integer id) {
+    public Account findById(String id) {
 
         String sql = "SELECT * FROM account WHERE id = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
-
+            ps.setString(1, id);  // ← String pas Integer
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 Account a = new Account();
-                a.setId(rs.getInt("id"));
-                a.setCollectivityId(rs.getInt("collectivity_id"));
+                a.setId(rs.getString("id"));
                 a.setType(rs.getString("type"));
-                a.setProvider(rs.getString("provider"));
-                a.setAccountNumber(rs.getString("account_number"));
                 a.setBalance(rs.getDouble("balance"));
+                a.setHolderName(rs.getString("holder_name"));
+                a.setPhoneNumber(rs.getString("phone_number"));
+                a.setCollectivityId(rs.getString("collectivity_id"));
                 return a;
             }
 
             return null;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateBalance(String id, double newBalance) {
+
+        String sql = "UPDATE account SET balance = ? WHERE id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDouble(1, newBalance);
+            ps.setString(2, id);  // ← String pas Integer
+            ps.executeUpdate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

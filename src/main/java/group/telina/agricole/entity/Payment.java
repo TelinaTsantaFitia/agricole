@@ -1,78 +1,37 @@
 package group.telina.agricole.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Payment {
 
     private Integer id;
-    private Integer memberId;
-    private Integer collectivityId;
+    private String memberId;        // ← String
+    private String collectivityId;  // ← String
+    private String accountId;       // ← String
     private Double amount;
-    private LocalDateTime paymentDate;
+    private LocalDate paymentDate;
     private String paymentMethod;
-    private Integer accountId;
 
     public Payment() {}
 
-    // =========================
-    // GETTERS
-    // =========================
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public Integer getMemberId() {
-        return memberId;
-    }
+    public String getMemberId() { return memberId; }
+    public void setMemberId(String memberId) { this.memberId = memberId; }
 
-    public Integer getCollectivityId() {
-        return collectivityId;
-    }
+    public String getCollectivityId() { return collectivityId; }
+    public void setCollectivityId(String collectivityId) { this.collectivityId = collectivityId; }
 
-    public Double getAmount() {
-        return amount;
-    }
+    public String getAccountId() { return accountId; }
+    public void setAccountId(String accountId) { this.accountId = accountId; }
 
-    public LocalDateTime getPaymentDate() {
-        return paymentDate;
-    }
+    public Double getAmount() { return amount; }
+    public void setAmount(Double amount) { this.amount = amount; }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
+    public LocalDate getPaymentDate() { return paymentDate; }
+    public void setPaymentDate(LocalDate paymentDate) { this.paymentDate = paymentDate; }
 
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    // =========================
-    // SETTERS
-    // =========================
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
-    }
-
-    public void setCollectivityId(Integer collectivityId) {
-        this.collectivityId = collectivityId;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public void setPaymentDate(LocalDateTime paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
-    }
+    public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
 }
