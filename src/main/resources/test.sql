@@ -130,3 +130,34 @@ VALUES
 ALTER TABLE member ADD COLUMN IF NOT EXISTS admission_date DATE;
 
 UPDATE member SET admission_date = '2026-01-01' WHERE admission_date IS NULL;
+
+-- Tables pour le Bonus 1 (E et F)
+DROP TABLE IF EXISTS attendance CASCADE;
+
+DROP TABLE IF EXISTS activity CASCADE;
+
+CREATE TABLE activity (
+                          id VARCHAR(20) PRIMARY KEY,
+                          label VARCHAR(100),
+                          type VARCHAR(50),
+                          activity_date DATE,
+                          mandatory BOOLEAN,
+                          collectivity_id VARCHAR(20),
+                          FOREIGN KEY (collectivity_id) REFERENCES collectivity(id)
+);
+
+CREATE TABLE attendance (
+                            id SERIAL PRIMARY KEY,
+                            activity_id VARCHAR(20),
+                            member_id VARCHAR(20),
+                            present BOOLEAN,
+                            FOREIGN KEY (activity_id) REFERENCES activity(id),
+                            FOREIGN KEY (member_id) REFERENCES member(id)
+);
+
+-- Données de test
+INSERT INTO activity VALUES
+                         ('act-1', 'Assemblée générale janvier', 'GENERAL_ASSEMBLY', '2026-01-12', true, 'col-1'),
+                         ('act-2', 'Formation juniors janvier', 'JUNIOR_TRAINING', '2026-01-24', true, 'col-1'),
+                         ('act-3', 'Assemblée générale janvier', 'GENERAL_ASSEMBLY', '2026-01-12', true, 'col-2');
+
