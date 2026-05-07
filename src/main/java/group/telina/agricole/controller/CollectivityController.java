@@ -49,4 +49,12 @@ public class CollectivityController {
             @RequestParam LocalDate at) {
         return ResponseEntity.ok(financialAccountService.getBalances(id, at));
     }
+
+    // PUT /collectivities/{id}/informations
+    @PutMapping("/{id}/informations")
+    public ResponseEntity<CollectivityRest> updateInformations(
+            @PathVariable String id,
+            @RequestBody Collectivity c) {
+        return ResponseEntity.ok(service.updateInformations(id, c));
+    }
 }

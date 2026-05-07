@@ -54,4 +54,22 @@ public class CollectivityService {
                 members
         );
     }
+
+    // PUT /collectivities/{id}/informations
+    public CollectivityRest updateInformations(String id, Collectivity c) {
+
+        if (repository.findById(id) == null) {
+            throw new RuntimeException("Collectivity not found with id: " + id);
+        }
+
+        // Vérification unicité du number
+        if (repository.existsByNumberAndIdNot(c.getNumber(), id)) {
+            throw new RuntimeException("Number already assigned");
+        }
+
+        repository.updateInformations(id, c.getNumber(), c.getName());
+
+        // Recharger et retourner l'entité mise à jour
+        return getById(id);
+    }
 }

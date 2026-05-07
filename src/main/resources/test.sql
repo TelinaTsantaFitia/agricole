@@ -126,3 +126,5 @@ VALUES
     ('C2-M6','col-2','C2-A-CASH',100000,'CASH','2026-01-01'),
     ('C2-M7','col-2','C2-A-MOBILE-1',40000,'MOBILE_MONEY','2026-01-01'),
     ('C2-M8','col-2','C2-A-MOBILE-1',60000,'MOBILE_MONEY','2026-01-01');
+
+SELECT * FROM collectivity;

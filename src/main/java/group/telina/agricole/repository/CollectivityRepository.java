@@ -175,4 +175,43 @@ public class CollectivityRepository {
         c.setCollectivityType(rs.getString("specialization"));
         return c;
     }
+    public void updateInformations(String id, Integer number, String name) {
+
+        String sql = """
+        UPDATE collectivity 
+        SET number = ?, name = ?
+        WHERE id = ?
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, number);
+            ps.setString(2, name);
+            ps.setString(3, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Vérifie si un numéro existe déjà pour une AUTRE collectivité
+    public boolean existsByNumberAndIdNot(Integer number, String excludeId) {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM collectivity 
+        WHERE number = ? AND id != ?
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, number);
+            ps.setString(2, excludeId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
