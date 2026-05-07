@@ -93,3 +93,13 @@ json{
   "paymentMethod": "CASH",
   "paymentDate": "2026-03-01"
 }
+
+# 11. GET /collectivities/col-1/statistics
+## Method : GET
+###
+http://localhost:8080/collectivities/col-1/statistics?from=2026-01-01&to=2026-12-31
+
+# 12. GET /collectivities/statistics
+## Method : GET
+###
+http://localhost:8080/collectivities/statistics?from=2026-01-01&to=2026-12-31

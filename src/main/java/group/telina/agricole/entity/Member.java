@@ -1,5 +1,6 @@
 package group.telina.agricole.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Member {
@@ -9,8 +10,12 @@ public class Member {
     private String lastName;
     private String email;
     private String collectivityId;
-
     private List<Sponsor> sponsors;
+    private LocalDate admissionDate; //
+
+    public LocalDate getAdmissionDate() { return admissionDate; }
+
+    public void setAdmissionDate(LocalDate admissionDate) { this.admissionDate = admissionDate; }
 
     public Member() {}
 

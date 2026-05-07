@@ -127,4 +127,6 @@ VALUES
     ('C2-M7','col-2','C2-A-MOBILE-1',40000,'MOBILE_MONEY','2026-01-01'),
     ('C2-M8','col-2','C2-A-MOBILE-1',60000,'MOBILE_MONEY','2026-01-01');
 
-SELECT * FROM collectivity;
+ALTER TABLE member ADD COLUMN IF NOT EXISTS admission_date DATE;
+
+UPDATE member SET admission_date = '2026-01-01' WHERE admission_date IS NULL;

@@ -1,10 +1,13 @@
 package group.telina.agricole.controller;
 
 import group.telina.agricole.dto.CollectivityRest;
+import group.telina.agricole.dto.CollectivityStatRest;
+import group.telina.agricole.dto.FederationCollectivityStatRest;
 import group.telina.agricole.entity.Collectivity;
 import group.telina.agricole.entity.FinancialAccount;
 import group.telina.agricole.service.CollectivityService;
 import group.telina.agricole.service.FinancialAccountService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,5 +59,23 @@ public class CollectivityController {
             @PathVariable String id,
             @RequestBody Collectivity c) {
         return ResponseEntity.ok(service.updateInformations(id, c));
+    }
+    @GetMapping("/{id}/statistics")
+    public ResponseEntity<CollectivityStatRest> getStats(
+            @PathVariable String id,
+            @RequestParam String from,
+            @RequestParam String to) {
+        LocalDate dateFrom = LocalDate.parse(from);
+        LocalDate dateTo = LocalDate.parse(to);
+        return ResponseEntity.ok(service.getCollectivityStatistics(id, dateFrom, dateTo)); // ← service
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<List<FederationCollectivityStatRest>> getFederationStats(
+            @RequestParam String from,
+            @RequestParam String to) {
+        LocalDate dateFrom = LocalDate.parse(from);
+        LocalDate dateTo = LocalDate.parse(to);
+        return ResponseEntity.ok(service.getFederationStatistics(dateFrom, dateTo)); // ← service
     }
 }
